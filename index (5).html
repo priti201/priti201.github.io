@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Priti Nath — Data Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #050d16;
+  --bg2: #0a1628;
+  --bg3: #0f1e35;
+  --blue: #2e86de;
+  --green: #1db98a;
+  --purple: #8b6cf7;
+  --gold: #f5a623;
+  --text: #e8edf5;
+  --muted: #4a6080;
+  --border: #1a2e42;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  font-weight:300;
+  overflow-x:hidden;
+}
+
+/* NOISE OVERLAY */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:0;
+  opacity:0.4;
+}
+
+/* NAV */
+nav{
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:100;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:1.2rem 4rem;
+  background:rgba(5,13,22,0.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{
+  font-family:'DM Mono',monospace;
+  font-size:0.85rem;
+  color:var(--blue);
+  letter-spacing:2px;
+}
+.nav-links{display:flex;gap:2rem;}
+.nav-links a{
+  font-family:'DM Mono',monospace;
+  font-size:0.75rem;
+  color:var(--muted);
+  text-decoration:none;
+  letter-spacing:1px;
+  transition:color 0.3s;
+}
+.nav-links a:hover{color:var(--text);}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:0 4rem;
+  position:relative;
+  overflow:hidden;
+}
+.hero-grid{
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size:60px 60px;
+  opacity:0.3;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+.hero-glow{
+  position:absolute;
+  width:600px;height:600px;
+  background:radial-gradient(circle, rgba(46,134,222,0.12) 0%, transparent 70%);
+  top:-100px;right:-100px;
+  pointer-events:none;
+}
+.hero-glow2{
+  position:absolute;
+  width:400px;height:400px;
+  background:radial-gradient(circle, rgba(29,185,138,0.08) 0%, transparent 70%);
+  bottom:0;left:20%;
+  pointer-events:none;
+}
+.hero-tag{
+  font-family:'DM Mono',monospace;
+  font-size:0.75rem;
+  color:var(--blue);
+  letter-spacing:3px;
+  margin-bottom:1.5rem;
+  opacity:0;
+  animation:fadeUp 0.8s 0.2s forwards;
+}
+.hero-name{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(3rem,7vw,6rem);
+  font-weight:800;
+  line-height:1;
+  margin-bottom:1rem;
+  opacity:0;
+  animation:fadeUp 0.8s 0.4s forwards;
+}
+.hero-name span{color:var(--blue);}
+.hero-title{
+  font-family:'DM Mono',monospace;
+  font-size:clamp(0.9rem,1.5vw,1.1rem);
+  color:var(--muted);
+  margin-bottom:2rem;
+  opacity:0;
+  animation:fadeUp 0.8s 0.6s forwards;
+}
+.hero-quote{
+  font-size:1rem;
+  color:var(--muted);
+  font-style:italic;
+  border-left:2px solid var(--blue);
+  padding-left:1rem;
+  margin-bottom:3rem;
+  max-width:540px;
+  opacity:0;
+  animation:fadeUp 0.8s 0.8s forwards;
+}
+.hero-btns{
+  display:flex;
+  gap:1rem;
+  flex-wrap:wrap;
+  opacity:0;
+  animation:fadeUp 0.8s 1s forwards;
+}
+.btn{
+  padding:0.75rem 2rem;
+  border-radius:4px;
+  font-family:'DM Mono',monospace;
+  font-size:0.8rem;
+  letter-spacing:1px;
+  cursor:pointer;
+  text-decoration:none;
+  transition:all 0.3s;
+}
+.btn-primary{
+  background:var(--blue);
+  color:#fff;
+  border:none;
+}
+.btn-primary:hover{background:#1a6fb5;transform:translateY(-2px);}
+.btn-outline{
+  background:transparent;
+  color:var(--text);
+  border:1px solid var(--border);
+}
+.btn-outline:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-2px);}
+
+/* STATS STRIP */
+.stats{
+  display:flex;
+  gap:0;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  background:var(--bg2);
+  overflow:hidden;
+}
+.stat{
+  flex:1;
+  padding:2rem;
+  text-align:center;
+  border-right:1px solid var(--border);
+  position:relative;
+}
+.stat:last-child{border-right:none;}
+.stat-num{
+  font-family:'Syne',sans-serif;
+  font-size:2.5rem;
+  font-weight:800;
+  color:var(--blue);
+  display:block;
+}
+.stat-label{
+  font-family:'DM Mono',monospace;
+  font-size:0.7rem;
+  color:var(--muted);
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+
+/* SECTIONS */
+section{padding:6rem 4rem;position:relative;z-index:1;}
+.section-tag{
+  font-family:'DM Mono',monospace;
+  font-size:0.7rem;
+  color:var(--blue);
+  letter-spacing:3px;
+  text-transform:uppercase;
+  margin-bottom:0.75rem;
+}
+.section-title{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(1.8rem,3vw,2.8rem);
+  font-weight:800;
+  margin-bottom:3rem;
+}
+
+/* SKILLS */
+.skills-bg{background:var(--bg2);}
+.skills-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;
+}
+.skill-card{
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:1.5rem;
+  transition:all 0.3s;
+  position:relative;
+  overflow:hidden;
+}
+.skill-card::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:2px;
+  background:var(--accent,var(--blue));
+  transform:scaleX(0);
+  transition:transform 0.3s;
+}
+.skill-card:hover::before{transform:scaleX(1);}
+.skill-card:hover{border-color:var(--accent,var(--blue));transform:translateY(-4px);}
+.skill-card-title{
+  font-family:'DM Mono',monospace;
+  font-size:0.75rem;
+  letter-spacing:2px;
+  color:var(--accent,var(--blue));
+  margin-bottom:1rem;
+  text-transform:uppercase;
+}
+.skill-tags{display:flex;flex-wrap:wrap;gap:0.5rem;}
+.tag{
+  font-family:'DM Mono',monospace;
+  font-size:0.7rem;
+  padding:0.3rem 0.75rem;
+  border-radius:20px;
+  border:1px solid var(--border);
+  color:var(--muted);
+  transition:all 0.2s;
+}
+.skill-card:hover .tag{border-color:var(--accent,var(--blue));color:var(--text);}
+
+/* PROJECTS */
+.projects-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+  gap:1.5rem;
+}
+.project-card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:2rem;
+  transition:all 0.3s;
+  position:relative;
+  overflow:hidden;
+}
+.project-card::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg, rgba(46,134,222,0.03) 0%, transparent 60%);
+  opacity:0;
+  transition:opacity 0.3s;
+}
+.project-card:hover::after{opacity:1;}
+.project-card:hover{border-color:var(--blue);transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,0.3);}
+.project-num{
+  font-family:'DM Mono',monospace;
+  font-size:0.7rem;
+  color:var(--muted);
+  margin-bottom:0.5rem;
+}
+.project-title{
+  font-family:'Syne',sans-serif;
+  font-size:1.3rem;
+  font-weight:700;
+  margin-bottom:0.75rem;
+  color:var(--text);
+}
+.project-desc{
+  font-size:0.9rem;
+  color:var(--muted);
+  line-height:1.7;
+  margin-bottom:1.5rem;
+}
+.project-stack{display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1.5rem;}
+.stack-tag{
+  font-family:'DM Mono',monospace;
+  font-size:0.65rem;
+  padding:0.2rem 0.6rem;
+  border-radius:3px;
+  background:var(--bg3);
+  color:var(--blue);
+  border:1px solid rgba(46,134,222,0.3);
+}
+.project-links{display:flex;gap:1rem;}
+.project-link{
+  font-family:'DM Mono',monospace;
+  font-size:0.72rem;
+  color:var(--muted);
+  text-decoration:none;
+  letter-spacing:1px;
+  transition:color 0.2s;
+  display:flex;
+  align-items:center;
+  gap:0.4rem;
+}
+.project-link:hover{color:var(--blue);}
+.badge-live{
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  padding:0.2rem 0.5rem;
+  border-radius:20px;
+  background:rgba(29,185,138,0.1);
+  color:var(--green);
+  border:1px solid rgba(29,185,138,0.3);
+  letter-spacing:1px;
+}
+
+/* EXPERIENCE */
+.exp-bg{background:var(--bg2);}
+.timeline{max-width:800px;}
+.timeline-item{
+  display:grid;
+  grid-template-columns:180px 1fr;
+  gap:2rem;
+  margin-bottom:3rem;
+  position:relative;
+}
+.timeline-item::before{
+  content:'';
+  position:absolute;
+  left:179px;
+  top:8px;bottom:-3rem;
+  width:1px;
+  background:var(--border);
+}
+.timeline-item:last-child::before{display:none;}
+.timeline-date{
+  font-family:'DM Mono',monospace;
+  font-size:0.72rem;
+  color:var(--muted);
+  text-align:right;
+  padding-top:4px;
+  line-height:1.6;
+}
+.timeline-dot{
+  position:absolute;
+  left:175px;
+  top:6px;
+  width:9px;height:9px;
+  border-radius:50%;
+  background:var(--blue);
+  border:2px solid var(--bg2);
+  z-index:1;
+}
+.timeline-content{padding-left:2rem;}
+.timeline-role{
+  font-family:'Syne',sans-serif;
+  font-size:1.1rem;
+  font-weight:700;
+  margin-bottom:0.25rem;
+}
+.timeline-company{
+  font-family:'DM Mono',monospace;
+  font-size:0.75rem;
+  color:var(--blue);
+  letter-spacing:1px;
+  margin-bottom:0.75rem;
+}
+.timeline-desc{
+  font-size:0.88rem;
+  color:var(--muted);
+  line-height:1.8;
+}
+.timeline-desc li{
+  margin-bottom:0.4rem;
+  list-style:none;
+  padding-left:1rem;
+  position:relative;
+}
+.timeline-desc li::before{
+  content:'▸';
+  position:absolute;left:0;
+  color:var(--blue);
+}
+
+/* CONTACT */
+.contact-inner{
+  max-width:600px;
+  margin:0 auto;
+  text-align:center;
+}
+.contact-inner .section-title{text-align:center;}
+.contact-desc{
+  color:var(--muted);
+  line-height:1.8;
+  margin-bottom:3rem;
+  font-size:0.95rem;
+}
+.contact-links{
+  display:flex;
+  justify-content:center;
+  gap:1.5rem;
+  flex-wrap:wrap;
+}
+.contact-link{
+  display:flex;
+  align-items:center;
+  gap:0.5rem;
+  font-family:'DM Mono',monospace;
+  font-size:0.78rem;
+  color:var(--muted);
+  text-decoration:none;
+  padding:0.75rem 1.5rem;
+  border:1px solid var(--border);
+  border-radius:4px;
+  letter-spacing:1px;
+  transition:all 0.3s;
+}
+.contact-link:hover{color:var(--blue);border-color:var(--blue);transform:translateY(-2px);}
+
+/* FOOTER */
+footer{
+  text-align:center;
+  padding:2rem;
+  border-top:1px solid var(--border);
+  font-family:'DM Mono',monospace;
+  font-size:0.7rem;
+  color:var(--muted);
+  letter-spacing:1px;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(24px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.fade-in{
+  opacity:0;
+  transform:translateY(20px);
+  transition:opacity 0.7s, transform 0.7s;
+}
+.fade-in.visible{opacity:1;transform:translateY(0);}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+::-webkit-scrollbar-thumb:hover{background:var(--blue);}
+
+@media(max-width:768px){
+  nav{padding:1rem 1.5rem;}
+  .nav-links{display:none;}
+  .hero{padding:0 1.5rem;}
+  section{padding:4rem 1.5rem;}
+  .timeline-item{grid-template-columns:1fr;}
+  .timeline-item::before{display:none;}
+  .timeline-dot{display:none;}
+  .timeline-date{text-align:left;}
+  .timeline-content{padding-left:0;}
+  .stats{flex-wrap:wrap;}
+  .stat{flex:1 1 50%;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">PN / DATA ENGINEER</div>
+  <div class="nav-links">
+    <a href="#skills">Skills</a>
+    <a href="#projects">Projects</a>
+    <a href="#experience">Experience</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-tag">AVAILABLE FOR HIRE ACROSS CANADA 🍁</div>
+  <h1 class="hero-name">Priti<br/><span>Nath</span></h1>
+  <div class="hero-title">DATA ENGINEER &nbsp;·&nbsp; AI DATA PIPELINES &nbsp;·&nbsp; CLOUD ARCHITECTURE</div>
+  <p class="hero-quote">"Data engineers build the roads. Data analysts drive them. I do both."</p>
+  <div class="hero-btns">
+    <a href="#projects" class="btn btn-primary">VIEW PROJECTS</a>
+    <a href="https://linkedin.com/in/pritinath" target="_blank" class="btn btn-outline">LINKEDIN</a>
+    <a href="https://github.com/priti201" target="_blank" class="btn btn-outline">GITHUB</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat fade-in">
+    <span class="stat-num">4+</span>
+    <span class="stat-label">Years Experience</span>
+  </div>
+  <div class="stat fade-in">
+    <span class="stat-num">2TB+</span>
+    <span class="stat-label">Daily Data Processed</span>
+  </div>
+  <div class="stat fade-in">
+    <span class="stat-num">15+</span>
+    <span class="stat-label">Pipelines Built</span>
+  </div>
+  <div class="stat fade-in">
+    <span class="stat-num">35%</span>
+    <span class="stat-label">Query Runtime Reduced</span>
+  </div>
+</div>
+
+<!-- SKILLS -->
+<section id="skills" class="skills-bg">
+  <div class="section-tag">// EXPERTISE</div>
+  <h2 class="section-title">Technical Skills</h2>
+  <div class="skills-grid">
+    <div class="skill-card fade-in" style="--accent:var(--blue)">
+      <div class="skill-card-title">Languages</div>
+      <div class="skill-tags">
+        <span class="tag">Python</span><span class="tag">SQL</span>
+        <span class="tag">PySpark</span><span class="tag">JavaScript</span>
+        <span class="tag">HTML5</span><span class="tag">CSS3</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in" style="--accent:var(--green)">
+      <div class="skill-card-title">Cloud & Data</div>
+      <div class="skill-tags">
+        <span class="tag">AWS (S3, Glue, Lambda)</span>
+        <span class="tag">GCP (BigQuery, GCS)</span>
+        <span class="tag">Azure (in progress)</span>
+        <span class="tag">Databricks</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in" style="--accent:var(--purple)">
+      <div class="skill-card-title">AI & GenAI</div>
+      <div class="skill-tags">
+        <span class="tag">RAG Pipelines</span>
+        <span class="tag">LLM Integration</span>
+        <span class="tag">Prompt Engineering</span>
+        <span class="tag">Embeddings</span>
+        <span class="tag">Deep Learning</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in" style="--accent:var(--gold)">
+      <div class="skill-card-title">Tools & DevOps</div>
+      <div class="skill-tags">
+        <span class="tag">dbt Core</span><span class="tag">Airflow</span>
+        <span class="tag">Kafka</span><span class="tag">Splunk</span>
+        <span class="tag">Docker</span><span class="tag">Jenkins</span>
+        <span class="tag">GitHub Actions</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in" style="--accent:var(--blue)">
+      <div class="skill-card-title">Analytics & BI</div>
+      <div class="skill-tags">
+        <span class="tag">Power BI</span><span class="tag">Tableau</span>
+        <span class="tag">Looker Studio</span>
+        <span class="tag">Data Modeling</span>
+        <span class="tag">Data Quality</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in" style="--accent:var(--green)">
+      <div class="skill-card-title">Databases</div>
+      <div class="skill-tags">
+        <span class="tag">BigQuery</span><span class="tag">MongoDB</span>
+        <span class="tag">PostgreSQL</span><span class="tag">NoSQL</span>
+        <span class="tag">HiveQL</span><span class="tag">Redshift</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-tag">// WORK</div>
+  <h2 class="section-title">Projects</h2>
+  <div class="projects-grid">
+
+    <div class="project-card fade-in">
+      <div class="project-num">01</div>
+      <div class="project-title">GCP Data Lakehouse</div>
+      <span class="badge-live">● IN PROGRESS</span>
+      <p class="project-desc" style="margin-top:0.75rem;">Production-grade Cloud Lakehouse on GCP — fully deployed with CI/CD. Implements complete ELT pipeline: raw ingestion → BigQuery → dbt layered transformations → Looker Studio live dashboard. Automated testing and data quality checks at every layer.</p>
+      <div class="project-stack">
+        <span class="stack-tag">GCP</span>
+        <span class="stack-tag">BigQuery</span>
+        <span class="stack-tag">dbt Core</span>
+        <span class="stack-tag">GCS</span>
+        <span class="stack-tag">Looker Studio</span>
+        <span class="stack-tag">GitHub Actions</span>
+        <span class="stack-tag">CI/CD</span>
+      </div>
+      <div class="project-links">
+        <a href="https://github.com/priti201/gcp-dbt-lakehouse-project" target="_blank" class="project-link">⟶ VIEW ON GITHUB</a>
+      </div>
+    </div>
+
+    <div class="project-card fade-in">
+      <div class="project-num">02</div>
+      <div class="project-title">Image Caption Generator</div>
+      <p class="project-desc">End-to-end deep learning pipeline using ResNet50 with LSTM/Transformer architectures achieving 92% accuracy. Deployed as a real-time inference service via Streamlit and FastAPI, processing 100+ images per session.</p>
+      <div class="project-stack">
+        <span class="stack-tag">Python</span>
+        <span class="stack-tag">ResNet50</span>
+        <span class="stack-tag">LSTM</span>
+        <span class="stack-tag">Transformers</span>
+        <span class="stack-tag">Streamlit</span>
+        <span class="stack-tag">FastAPI</span>
+      </div>
+      <div class="project-links">
+        <a href="https://github.com/priti201" target="_blank" class="project-link">⟶ VIEW ON GITHUB</a>
+      </div>
+    </div>
+
+    <div class="project-card fade-in">
+      <div class="project-num">03</div>
+      <div class="project-title">CheckMate — Chess with Live Rankings</div>
+      <p class="project-desc">Full-stack interactive chess game with complete legal move validation. Integrated backend REST APIs for real-time global Top-100 player rankings refreshed every 24 hours.</p>
+      <div class="project-stack">
+        <span class="stack-tag">JavaScript</span>
+        <span class="stack-tag">HTML5</span>
+        <span class="stack-tag">CSS3</span>
+        <span class="stack-tag">REST APIs</span>
+        <span class="stack-tag">Backend Integration</span>
+      </div>
+      <div class="project-links">
+        <a href="https://github.com/priti201" target="_blank" class="project-link">⟶ VIEW ON GITHUB</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" class="exp-bg">
+  <div class="section-tag">// HISTORY</div>
+  <h2 class="section-title">Experience</h2>
+  <div class="timeline">
+
+    <div class="timeline-item fade-in">
+      <div class="timeline-date">NOV 2018<br/>SEP 2022<br/><br/>3 YRS 11 MOS</div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="timeline-role">Data Engineer</div>
+        <div class="timeline-company">ACCENTURE · BENGALURU & KOLKATA, INDIA</div>
+        <ul class="timeline-desc">
+          <li>Designed and maintained 15+ scalable ETL/ELT pipelines processing 2TB+ daily</li>
+          <li>Built AI-ready data ingestion pipelines for structured and unstructured data sources</li>
+          <li>Implemented 25+ automated data quality checks, reducing incidents by 35%</li>
+          <li>Built Splunk dashboards monitoring 50+ pipelines, reducing troubleshooting time by 45%</li>
+          <li>Developed ML-based ticket classifier achieving 85% classification accuracy</li>
+          <li>Enhanced data governance across 200+ workflows, increasing traceability by 50%</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item fade-in">
+      <div class="timeline-date">JAN 2023<br/>AUG 2024</div>
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="timeline-role">Graduate Certificate — AI & Data Science</div>
+        <div class="timeline-company">LOYALIST COLLEGE · ONTARIO, CANADA</div>
+        <ul class="timeline-desc">
+          <li>Postgraduate specialization in Artificial Intelligence and Data Science</li>
+          <li>Projects: Image captioning deep learning model, full-stack chess application</li>
+          <li>Peer Mentor for Python, SQL, and machine learning coursework</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item fade-in">
+      <div class="timeline-date">MAY 2026<br/>PRESENT</div>
+      <div class="timeline-dot" style="background:var(--green)"></div>
+      <div class="timeline-content">
+        <div class="timeline-role">Independent Cloud Project</div>
+        <div class="timeline-company">GCP DATA LAKEHOUSE · SELF-DIRECTED</div>
+        <ul class="timeline-desc">
+          <li>Building production-grade Lakehouse on GCP with full CI/CD deployment</li>
+          <li>Implementing dbt layered architecture with automated testing</li>
+          <li>Exploring RAG pipelines and LLM integration for AI-ready data workflows</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="section-tag" style="text-align:center;">// CONTACT</div>
+    <h2 class="section-title">Let's Work Together</h2>
+    <p class="contact-desc">Open to Data Engineer and Data Analyst roles anywhere across Canada — remote, hybrid, or on-site. Full-time opportunities.</p>
+    <div class="contact-links">
+      <a href="mailto:nathpriti201@gmail.com" class="contact-link">✉ EMAIL</a>
+      <a href="https://linkedin.com/in/pritinath" target="_blank" class="contact-link">in LINKEDIN</a>
+      <a href="https://github.com/priti201" target="_blank" class="contact-link">⌥ GITHUB</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>PRITI NATH · DATA ENGINEER · CANADA · 2026</p>
+</footer>
+
+<script>
+// Scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if(entry.isIntersecting){
+      setTimeout(() => entry.target.classList.add('visible'), i * 100);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
