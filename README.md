@@ -53,17 +53,17 @@ Same approach I used in production at Accenture. 85% accuracy. 40% faster triage
 
 ---
 
-//<--### 🖼️ Image Caption Generator
+### 🖼️ Image Caption Generator
 [github.com/priti201](https://github.com/priti201)
 
 ResNet50 + LSTM + Transformer. 92% accuracy.
 Deployed as a real-time API with FastAPI + Streamlit.
-Because why train a model if nobody can use it.-->//
+Because why train a model if nobody can use it.
 
 ---
 
 ### ♟️ CheckMate
-[github.com/priti201](https://github.com/priti201)
+[[github.com/priti201](https://github.com/priti201](https://github.com/priti201/Chess_Bot))
 
 Full chess game built from scratch — every rule, every edge case.
 Live Top-100 player rankings pulled from a real API every 24 hours.
