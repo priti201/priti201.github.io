@@ -18,7 +18,7 @@ These days I'm based in Toronto, expanding into cloud architecture and AI-ready 
 
 ## Things I'm good at
 
-```python
+python
 stack = {
     "languages"  : ["Python", "SQL", "PySpark", "JavaScript"],
     "cloud"      : ["AWS", "GCP", "Azure (learning)"],
@@ -27,7 +27,7 @@ stack = {
     "viz"        : ["Power BI", "Tableau", "Looker Studio"],
     "devops"     : ["Docker", "GitHub Actions", "Jenkins", "CI/CD"],
 }
-```
+
 
 ---
 
